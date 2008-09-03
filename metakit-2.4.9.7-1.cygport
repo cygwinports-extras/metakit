@@ -1,0 +1,40 @@
+inherit python tcl
+
+DESCRIPTION="Embedded database library"
+HOMEPAGE="http://www.equi4.com/metakit/"
+SRC_URI="http://www.equi4.com/pub/mk/${P}.tar.gz"
+PATCH_URI="2.4.9.7-configure.patch"
+
+SRC_DIR=${P}/unix
+
+PKG_NAMES="${PN} libmk4 libmk4-devel python-${PN} tcl-${PN}"
+PKG_HINTS="src lib devel python tcl"
+PKG_CONTENTS[0]=	# empty
+PKG_CONTENTS[1]="usr/bin/*.dll usr/share/doc/"
+PKG_CONTENTS[2]="usr/include/ usr/lib/lib*"
+PKG_CONTENTS[3]=${PYTHON_SITELIB#/}
+PKG_CONTENTS[4]=${TCL_LIBDIR#/}
+
+DIFF_EXCLUDES="configure"
+
+src_compile() {
+	cd ${S}
+	cygautoreconf
+	cd ${B}
+	cygconf --with-python=/usr --with-tcl=${TCL_INCLUDEDIR},${TCL_LIBDIR}
+	cygmake libmk4.dll LINK_SPECIAL_FLAGS="-Wl,--out-implib,libmk4.dll.a"
+	cygmake Mk4tcl.dll
+	cygmake Mk4py.dll LINK_SPECIAL_FLAGS="${LIBPYTHON}"
+}
+
+src_install() {
+	cd ${B}
+	dodir /usr/bin ${PYTHON_SITELIB} ${TCL_LIBDIR}
+	cyginstall
+
+	mv ${D}/usr/lib/libmk4.dll ${D}/usr/bin/
+	dolib libmk4.dll.a
+
+	python_optimize
+}
+HTMLDOCS="../CHANGES ../README ../license.terms"

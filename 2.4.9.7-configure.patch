@@ -1,0 +1,21 @@
+--- origsrc/metakit-2.4.9.7/unix/configure.in	2007-06-15 18:26:40.000000000 -0500
++++ src/metakit-2.4.9.7/unix/configure.in	2008-09-02 23:30:42.008557200 -0500
+@@ -116,7 +116,7 @@
+ 
+ if test $SHARED_BUILD = 1; then
+   SHLIB_FLAGS="-shared"
+-  SHLIB_CFLAGS="-fPIC -DUSE_TCL_STUBS"
++  SHLIB_CFLAGS="-DUSE_TCL_STUBS"
+   SHLIB_LD="g++ -shared"
+ else
+   SHLIB_FLAGS=""
+@@ -164,8 +164,7 @@
+     esac
+     SHLIB_SUFFIX=".sl"
+     ;;
+-  cyg*)
+-    LIB_SUFFIX=".lib"
++  CYGWIN*)
+     SHLIB_SUFFIX=".dll"
+     ;;
+ esac
